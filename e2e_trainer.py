@@ -12,6 +12,7 @@ threads contain each a diferent Worker.
 import argparse
 import os
 import shutil
+import time
 import yaml
 import logging
 from psutil import virtual_memory
@@ -84,6 +85,7 @@ def run_worker(model_path, config, task, data_path, local_rank, backend):
         data_path (str): path to data.
         local_rank (int): the rank of the NCCL/GLOO thread.
     """
+    start_time_total = time.perf_counter()
     model_config = config["model_config"]
     server_config = config["server_config"]
     client_config = config["client_config"]
@@ -115,6 +117,7 @@ def run_worker(model_path, config, task, data_path, local_rank, backend):
     num_clients = Client.get_train_dataset(data_path, config, task)
     config["server_config"]["data_config"]["num_clients"] = num_clients
 
+    start_time_simulation = time.perf_counter()
     # Instantiate the Server object on the first thread
     if WORLD_RANK == 0:
 
@@ -193,6 +196,10 @@ def run_worker(model_path, config, task, data_path, local_rank, backend):
             config= config,
         )
         worker.run()
+
+    end_time = time.perf_counter()
+    print("Total simulation time (s):", end_time - start_time_simulation)
+    print("Total time (s):", end_time - start_time_total)
 
 
 if __name__ == "__main__":
