@@ -34,7 +34,7 @@ class FEDCIFAR10:
         (train_images, train_labels, channel_means, channel_stddevs
          ) = load_and_preprocess('../data/cifar10/cifar10_train.p')
         (test_images, test_labels, _,
-         _) = load_and_preprocess('../data/cifar10/cifar10_train.p',
+         _) = load_and_preprocess('../data/cifar10/cifar10_test.p',
                                   channel_means, channel_stddevs)
 
         test_dict = {
